@@ -10,7 +10,7 @@ const saveDataService = async (data: Data, io: Server) => {
       'INSERT INTO movements (name, value, created_by) VALUES (?, ?, ?)',
       [name, value, created_by]
     );
-    io.to(String(created_by)).emit('newMovement', data);
+    io.to(String(created_by)).emit('event_name', data);
   } finally {
     await conn.end();
   }
