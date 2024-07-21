@@ -1,19 +1,9 @@
-import connection from '../config/db';
-import { Data } from '../models/data.model';
-import { Server } from 'socket.io';
+// import connection from "../config/db";
+// import { Data } from "../models/data.model";
 
-const saveDataService = async (data: Data, io: Server) => {
-  const { name, value, created_by } = data;
-  const conn = await connection;
-  try {
-    await conn.execute(
-      'INSERT INTO movements (name, value, created_by) VALUES (?, ?, ?)',
-      [name, value, created_by]
-    );
-    io.to(String(created_by)).emit('event_name', data);
-  } finally {
-    await conn.end();
-  }
-};
+// const SaveDataService = async (data: Data): Promise<void> => {
+//   const { movement_id, value } = data;
+//   await (await connection).execute('INSERT INTO movements (movement_id, value) VALUES (?, ?)', [movement_id, value])
+// }
 
-export default saveDataService;
+// export default SaveDataService;

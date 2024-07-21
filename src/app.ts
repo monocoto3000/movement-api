@@ -1,34 +1,28 @@
+//Libraries
 import express from 'express';
-import * as dotenv from 'dotenv';
-import bodyParser from 'body-parser';
-import http from 'http';
+import * as http from 'http';
 import { Server } from 'socket.io';
-import dataRoutes from './routes/data.routes';
+import cors from 'cors';
 
-dotenv.config();
+//Proyect imports
+// import { socketioAuthMiddleware } from './middleware/middleware';
+import { WebSocketService } from './services/send.data.service';
+import routes from './routes/data.routes'
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+app.use(cors());
 
 const server = http.createServer(app);
-const io = new Server(server);
-
-app.use(bodyParser.json());
-
-app.use('/movements', dataRoutes(io));
-
-app.disable('x-powered-by');
-
-io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
-  socket.on('joinRoom', (userId) => {
-    socket.join(userId);
-    console.log(`User ${socket.id} joined room: ${userId}`);
-  });
-  socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
-  });
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
 });
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.use('/', routes);
+// io.use(socketioAuthMiddleware);
+const websocketHandler = new WebSocketService(io);
+const PORT = 4001;
+server.listen(PORT, () => {
+  console.log(`Servidor WebSocket escuchando en el puerto ${PORT}`);
 });
