@@ -37,11 +37,12 @@ export class WebSocketService {
   }
 
   private async handlePacket(packet: any) {
-    const { event, data } = packet;
-    console.log(`Processing ${event} with data:`, data);
-    (await connection).execute('INSERT INTO movements (room_id, detected_at) VALUES (?, ?)', [data.room_id, data.detected_at])
-    if (data.id) {
-      this.io.to(data.room_id).emit(event, data);
+    const { event, movement  } = packet;
+    console.log(packet)
+    console.log(`Processing ${event} with data:`, movement);
+    (await connection).execute('INSERT INTO movement (room_id, detected_at) VALUES (?, ?)', [movement.room_id, movement.detected_at])
+    if (movement.room_id) {
+      this.io.to(movement.room_id).emit(event, packet.movement);
     } else {
       console.log("Error finding users to send data")
     }
