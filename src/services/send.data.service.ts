@@ -1,5 +1,5 @@
 import { Server, Socket } from 'socket.io';
-// import connection from '../config/db';
+import connection from '../config/db';
 
 export class WebSocketService {
   private packetBuffer: any[] = [];
@@ -36,13 +36,12 @@ export class WebSocketService {
     }
   }
 
-  // si se chispa poner el async ojala no explote todo
   private async handlePacket(packet: any) {
     const { event, data } = packet;
     console.log(`Processing ${event} with data:`, data);
-    // (await connection).execute('INSERT INTO movements (movement_id, value) VALUES (?, ?)', [data.movement_id, data.value])
+    (await connection).execute('INSERT INTO movements (room_id, detected_at) VALUES (?, ?)', [data.room_id, data.detected_at])
     if (data.id) {
-      this.io.to(data.id).emit(event, data);
+      this.io.to(data.room_id).emit(event, data);
     } else {
       console.log("Error finding users to send data")
     }

@@ -1,4 +1,4 @@
 export  interface Data {
-    movement_id: number;
-    value: boolean;
+    room_id: number;
+    detected_at: Date;
 };
